@@ -1,0 +1,77 @@
+body {
+  text-align: center;
+  padding-top: 5px;
+  padding-left: 5%;
+  padding-right: 5%;
+ 
+}
+#borde{
+ border-width: 5px;
+ border-style: double;
+ border-color: black;
+ padding: 5px;
+}
+
+.bordes{
+  width: 25%;
+}
+#bottom{
+  margin-top: 3%;
+  
+}
+#topRight{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 30%;
+}
+#topLeft{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 30%;
+}
+#bottomTodo{
+  width: 40%;
+  
+}
+h1{
+  color: blue;
+  
+
+}
+h3{
+  margin-bottom: 3%;
+  color: red;
+ 
+}
+
+img{
+  width: 80px;
+  margin-bottom: 3%;
+}
+label{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#elegir{
+  display:flex;
+  justify-content: space-around;
+}
+
+
+#nDueño{
+  color: red;
+}
+.button{
+  margin-top: 5px;
+}
+
+#busc{
+  margin-left: 3px;
+}
+#chau{
+  font-size: larger;
+  color: red;
+}

@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  img(src="/images/margenUp.jpg", alt="", class="bordes")
+  h1 To-Do list App
+
+  h2 LogIn/SignUp with:
+  
+  a(href="http://localhost:3000/auth/github")
+    img(src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", alt="")
+
+  h3 or
+
+  h4 Login
+  form(action="/auth/login" method="post")
+            label(for="mail") Email
+            input(type="email", name="mail")
+            label(for="pass") Clave 
+            input(type="text", name="pass")
+            br
+            input(type="submit", value="ingresar", class="button")    
+
+  br
+  br
+
+  h4 SignUp
+  form(action="/auth/registrar" method="post")
+            label(for="Email") Email
+            input(type="email", name="Email")
+            label(for="nombreUsuario") Nombre de Usuario
+            input(type="text", name="nombreUsuario")
+            label(for="passw") Clave 
+            input(type="text", name="passw")
+            br
+            input(type="submit", value="Registrarse", class="button")
+
+  img(src="/images/margenBottom.jpg", alt="", class="bordes", id="bottom")
+  

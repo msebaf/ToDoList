@@ -1,0 +1,179 @@
+extends layout
+
+block content
+
+    img(src="/images/toppng.com-tribal-clipart-corner-decoration-black-white-corner-borders-587x265.png", alt="", id="topRight")
+    img(src="/images/toppng.com-tribal-clipart-corner-decoration-black-white-corner-borders-587x265-ConvertImage.png", alt="", id="topLeft")
+   
+    h1 Gestor de Tareas
+   
+    form(action="/todo/nList" method="post")
+            label(for="nombre") Nueva Lista
+            br
+            input(type="text", name="nombre")
+            br
+            input(type="submit", value="Crear", class="button")  
+    br
+
+    div(id="elegir")
+        div
+            form(action="/todo/select", method="post")
+                p Listas activas 
+                label(for="opcion")        
+                select(name="opcion")
+                    option(value="" selected disabled hidden) Elige una lista
+                    each lista in listas
+                        if(!lista.archivada)
+                                option(value=lista.id) #{lista.titulo} : [#{lista.estado}]
+                br
+                input(type="submit", name="lista",value="Buscar", class="button")
+        div
+            form(action="/todo/select", method="post")
+                p Tareas de Contactos
+                label(for="opcion")        
+                select(name="opcion")
+                    option(value="" selected disabled hidden) Elige una lista
+                    each lista in listasAmigos
+                        option(value=lista.id) #{lista.nombre} : [#{lista.mail}]
+                br
+                input(type="submit", name="lista",value="Buscar", class="button")
+    
+    br
+    br
+    div(id="borde")
+        h1=nombre
+            if(dueñoLista)
+                h1(id="nDueño")= dueñoLista
+        table.table#tabla  <!-- agrero el identificador que defini en el script jquery del datatables-->
+            thead
+                tr
+                    th Tarea
+                    th Fecha de Creacion
+                    th prioridad
+                    th Fecha Limite
+                    th Estado
+                    th Fecha de Resolucion
+                    th
+                        if(nombre != "Tareas Asignadas")
+                            if(tareas)
+                                if(tareas.length>0)
+                                    if(tareas.every(tarea => tarea.estadoTarea == "resuelta" && !archivada))
+                                        form(action=`/todo/archivar/${idL}`, method="post")
+                                            input(type="submit", value="ARCHIVAR LISTA")
+                                    else
+                                        form(action=`/todo/archivar/${idL}`, method="post")
+                                            input(type="submit", value="ARCHIVAR LISTA" disabled) 
+                                else
+                                    form(action="/todo/deleteList", method="post") 
+                                        input(type="hidden", name="id", value=idL)
+                                        input(type="submit", value="Borrar Lista")
+
+                    th
+                    th
+                        if(nombre == "Tareas Asignadas")
+                            ="ID creador"
+                        
+
+                    
+                    
+            tbody(id="tbody")
+                if(tareas)
+                    each tarea in tareas 
+                        tr(id=tarea.id)
+                            td=tarea.tarea
+                            td=tarea.fechaCreacionTarea
+                            td=tarea.prioridad
+                            td
+                                if(tarea.fechaLimiteTarea != "0000-00-00")
+                                    =tarea.fechaLimiteTarea
+                                else 
+                                    ="Sin fecha limite"
+                            td=tarea.estadoTarea
+                            td 
+                                if(tarea.fechaResolucionTarea)
+                                    = tarea.fechaResolucionTarea
+                                else 
+                                    ="NO TERMINADA"
+                            td
+                                form(action="/todo/update" method="post")
+                                    if(tarea.estadoTarea=="sin resolver")
+                                        
+                                            input(type="hidden", name="id", value=tarea.id)
+                                            if(dueñoLista)
+                                                input(type="submit",name="estado", value="comenzar" disabled)
+                                            else
+                                                input(type="submit",name="estado", value="comenzar")
+                                    else if(tarea.estadoTarea=="resolviendo")
+                                    
+                                            input(type="hidden", name="id", value=tarea.id)
+                                            if(dueñoLista)
+                                                input(type="submit", name="estado", value="terminar" disabled)
+                                            else
+                                                input(type="submit", name="estado", value="terminar")
+                                    else
+                                        ="TERMINADA"
+                            td
+                                if(archivada || (tarea.idCreador != listas[0].idDueño && nombre == "Tareas Asignadas"))
+                                    form(action=`/todo/delete/${tarea.id}` method="post")
+                                        input(type="hidden", name="id", value=tarea.id)
+                                        input(type="submit", name="estado",value="borrar" disabled)
+                                else
+                                    form(action=`/todo/delete/${tarea.id}` method="post")
+                                        input(type="hidden", name="id", value=tarea.id)
+                                        input(type="submit", name="estado",value="borrar" )
+                            td
+                                if(nombre=="Tareas Asignadas")
+                                    if(tarea.idCreador==miId)
+                                        ="usuario"
+                                    else
+                                        =tarea.idCreador
+
+    if(tareas && !archivada)
+        if(tareas.length > 0)     
+             
+            form(action="/todo/add" method="post")
+                if(tareas)
+                    input(type="hidden", name="idList", value=tareas[0].idLista)
+                label(for="tarea") Tarea
+                input(type="text", name="tarea" placeholder="Agregar una tarea")
+                label(for="prioridad") &nbsp Prioridad &nbsp
+                select(name="prioridad")
+                    option(value="baja") baja
+                    option(value="media") media
+                    option(value="alta") alta
+                label(for="fechaLimite") &nbsp Fecha Limite &nbsp
+                input(type="date", name="fechaLimite")
+                input(type="submit", value="Agregar Tarea", class="button")
+        else
+            form(action="/todo/add" method="post")
+                input(type="hidden", name="idList", value=idL)
+                label(for="tarea") Tarea 
+                input(type="text", name="tarea" placeholder="Agregar una tarea")
+                label(for="prioridad") &nbsp Prioridad &nbsp
+                select(name="prioridad")
+                    option(value="baja") baja
+                    option(value="media") media
+                    option(value="alta") alta
+                label(for="fechaLimite") &nbsp Fecha Limite &nbsp
+                input(type="date", name="fechaLimite")
+                input(type="submit", value="Agregar Tarea", class="button")
+
+       
+    br
+    br
+    form(action="/todo/select", method="post")
+        p Consultar listas archivadas       
+            select(name="opcion")
+                option(value="" selected disabled hidden) Elige una lista
+                each lista in listas
+                    if(lista.archivada)
+                        option(value=lista.id) #{lista.titulo}
+                input(type="submit", name="lista",value="Buscar" id="busc")
+    
+    a(href="http://localhost:3000/auth/logout")
+        p(id="chau") Salir
+
+    img(src="/images/linea.png", alt="", id="bottomTodo")
+
+   
+    
